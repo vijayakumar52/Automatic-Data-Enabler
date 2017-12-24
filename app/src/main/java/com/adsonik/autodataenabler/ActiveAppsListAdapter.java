@@ -1,6 +1,8 @@
 package com.adsonik.autodataenabler;
 
 import android.app.Activity;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -49,13 +51,28 @@ public class ActiveAppsListAdapter extends BaseAdapter {
 
     public String getName(int position) {
         String packageName = getItem(position);
-        return context.getPackageManager().getInstallerPackageName(packageName);
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            ApplicationInfo info = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+            String appName = (String) packageManager.getApplicationLabel(info);
+            return appName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
-    public List<String> getAllItems(){
+
+    public List<String> getAllItems() {
         return packageList;
     }
+
     public long getItemId(int position) {
         return 0;
+    }
+
+    public void setItems(List<String> items) {
+        this.packageList = items;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -65,8 +82,8 @@ public class ActiveAppsListAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.active_apps_component, null);
             holder = new ViewHolder();
-            holder.apkName = (TextView) convertView.findViewById(R.id.app_icon);
-            holder.imgView = (ImageView) convertView.findViewById(R.id.app_name);
+            holder.apkName = (TextView) convertView.findViewById(R.id.app_name);
+            holder.imgView = (ImageView) convertView.findViewById(R.id.app_icon);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

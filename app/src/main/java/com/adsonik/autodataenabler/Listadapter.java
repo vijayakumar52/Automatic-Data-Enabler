@@ -1,140 +1,92 @@
 package com.adsonik.autodataenabler;
 
-import java.util.List;
-
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class Listadapter extends BaseAdapter{
+import java.util.List;
 
-	List<PackageInfo> packageList;
-	Activity context;
-	PackageManager packageManager;
-	boolean[] itemChecked;
-	String[] list;
-	SharedPreferences myPrefs;
-	String appName1;
-	int size=0;
-	public Listadapter(Activity context, List<PackageInfo> packageList,
-			PackageManager packageManager) {
-		super();
-		this.context = context;
-		this.packageList = packageList;
-		this.packageManager = packageManager;
-		itemChecked = new boolean[packageList.size()];
-		myPrefs=PreferenceManager.getDefaultSharedPreferences(context);
-		
-		
-	}
+public class Listadapter extends BaseAdapter {
 
-	private class ViewHolder {
-		TextView apkName;
-		CheckBox ck1;
-	}
+    private List<PackageInfo> packageList;
+    private List<String> whiteListedList;
+    private Activity context;
+    private PackageManager packageManager;
+    private String[] list;
+    private String appName1;
+    private int size = 0;
 
-	public int getCount() {
-		return packageList.size();
-	}
+    public Listadapter(Activity context, List<PackageInfo> packageList, List<String> whitlistedList) {
+        super();
+        this.context = context;
+        this.packageList = packageList;
+        this.whiteListedList = whitlistedList;
+        this.packageManager = context.getPackageManager();
+    }
 
-	public Object getItem(int position) {
-		return packageList.get(position);
-	}
+    private class ViewHolder {
+        TextView apkName;
+        CheckBox ck1;
+    }
 
-	public long getItemId(int position) {
-		return 0;
-	}
+    public int getCount() {
+        return packageList.size();
+    }
 
-	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
-		final ViewHolder holder;
-		
-		LayoutInflater inflater = context.getLayoutInflater();
-        Typeface tf=Typeface.createFromAsset(context.getAssets(), "othercontent.TTF");
+    public Object getItem(int position) {
+        return packageList.get(position);
+    }
 
+    public long getItemId(int position) {
+        return 0;
+    }
 
-		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.list_item, null);
-			holder = new ViewHolder();
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
+        LayoutInflater inflater = context.getLayoutInflater();
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.list_item, null);
+            holder = new ViewHolder();
+            holder.apkName = (TextView) convertView.findViewById(R.id.textView1);
+            holder.ck1 = (CheckBox) convertView.findViewById(R.id.checkBox1);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+        PackageInfo packageInfo = (PackageInfo) getItem(position);
 
-			holder.apkName = (TextView) convertView
-					.findViewById(R.id.textView1);
-			holder.ck1 = (CheckBox) convertView
-					.findViewById(R.id.checkBox1);
+        Drawable appIcon = packageManager.getApplicationIcon(packageInfo.applicationInfo);
+        String appName = packageManager.getApplicationLabel(packageInfo.applicationInfo).toString();
+        appName1 = packageInfo.packageName;
 
-			convertView.setTag(holder);
-			// holder.ck1.setTag(packageList.get(position));
+        appIcon.setBounds(0, 0, 60, 60);
+        holder.apkName.setCompoundDrawables(appIcon, null, null, null);
+        holder.apkName.setCompoundDrawablePadding(15);
+        holder.apkName.setText(appName);
+        if (contains(packageInfo.packageName)) {
+            holder.ck1.setChecked(true);
+        } else {
+            holder.ck1.setChecked(false);
+        }
+        return convertView;
+    }
 
-		} else {
-			
-			holder = (ViewHolder) convertView.getTag();
-		}
-		// ViewHolder holder = (ViewHolder) convertView.getTag();
-		PackageInfo packageInfo = (PackageInfo) getItem(position);
-
-		Drawable appIcon = packageManager
-				.getApplicationIcon(packageInfo.applicationInfo);
-		String appName = packageManager.getApplicationLabel(
-				packageInfo.applicationInfo).toString();
-		appName1 =packageInfo.packageName;
-		
-		appIcon.setBounds(0, 0, 60, 60);
-		holder.apkName.setCompoundDrawables(appIcon, null, null, null);
-		holder.apkName.setCompoundDrawablePadding(15);
-		holder.apkName.setText(appName);
-		holder.apkName.setTypeface(tf);
-		holder.ck1.setChecked(false);
-
-		size=myPrefs.getInt("array_size", 0);
-		list=new String[size];
-		for(int i=0;i<size;i++){
-			list[i]=myPrefs.getString("array_"+i, "null");
-		}
-		for(int i=0;i<size;i++){
-			if(appName1.contentEquals(list[i])){
-				holder.ck1.setChecked(true);
-			}
-		}
-/*
-		if (itemChecked[position])
-			holder.ck1.setChecked(true);
-		else
-			holder.ck1.setChecked(false);
-			
-		holder.ck1.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if (holder.ck1.isChecked()){
-					itemChecked[position] = true;
-				
-				
-				}
-				else
-				{
-					itemChecked[position] = false;
-					
-
-				}
-			}
-		
-		});
-*/
-		return convertView;
-
-	}
-
+    private boolean contains(String packageName) {
+        for (String whiteListedId : whiteListedList) {
+            if (whiteListedId.equals(packageName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 }

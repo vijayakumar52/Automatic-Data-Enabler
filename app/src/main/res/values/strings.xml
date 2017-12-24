@@ -15,7 +15,7 @@
     <string name="ui_activate">Activate</string>
     <string name="ui_preferred_con_type">Preferred Connection Type</string>
     <string name="ui_active_apps">Active apps</string>
-    <string name="ui_empty">Empty</string>
+    <string name="ui_empty">No Application Selected</string>
     <string name="ui_pick_apps">Pick Apps</string>
     <string name="noti_title">Service Started</string>
     <string name="noti_content">Service started in background to keep track of running apps</string>
@@ -26,5 +26,6 @@
     <string name="toast_mobiledata_enabled">Mobile data enabled!</string>
     <string name="toast_mobiledata_disabled">Mobile data disabled!</string>
     <string name="toast_please_select_atlease_one_app">Please select at least one application :-(</string>
+    <string name="toast_apps_added">Apps added!</string>
 
 </resources>

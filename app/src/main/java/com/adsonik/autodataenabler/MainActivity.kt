@@ -32,6 +32,16 @@ class MainActivity : AppCompatActivity() {
         val lvActiveApps = bind<ListView>(this, R.id.lvActiveApps)
         val btnActivate = bind<Button>(this, R.id.btnActivate)
 
+
+        var curPreference = PrefUtils.getPrefValueInt(this, PREF_PREFERENCE);
+        if (curPreference == -1) {
+            curPreference = 0
+        }
+        if (curPreference == 0) {
+            conRadioGroup.check(R.id.radioWifi)
+        } else if (curPreference == 1) {
+            conRadioGroup.check(R.id.radio2G)
+        }
         masterSwitch.setOnCheckedChangeListener { compoundButton, isChecked ->
             if (isChecked) {
                 scheduleTask(this)
@@ -57,9 +67,16 @@ class MainActivity : AppCompatActivity() {
                 val activeAppsSet = HashSet<String>()
                 activeAppsSet.addAll(allItems)
                 addApps(activeAppsSet)
+                ToastUtils.showToast(this, R.string.toast_apps_added)
             } else {
                 ToastUtils.showToast(this, R.string.toast_please_select_atlease_one_app)
             }
+        }
+
+        btnPickApps.setOnClickListener { view ->
+            val intent = Intent(this, AppDisplay::class.java)
+            intent.putStringArrayListExtra(EXTRA_RESULE, activeAppsList)
+            startActivityForResult(intent, REQUEST_CODE)
         }
     }
 
@@ -79,7 +96,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    companion object {
+    public companion object {
         fun scheduleTask(context: Context) {
             val interval = 60 * 1000
             val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
@@ -106,9 +123,24 @@ class MainActivity : AppCompatActivity() {
 
         val PREF_WHITELISTED_APPS: String = "whiteListedApps"
         val PREF_PREFERENCE: String = "preference"
+        val REQUEST_CODE = 1010
+        @JvmField
+        val EXTRA_RESULE = "packages"
     }
 
     fun addApps(apps: Set<String>) {
         PrefUtils.putStringSet(this, PREF_WHITELISTED_APPS, apps)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE) {
+            if (data != null) {
+                val result = data.getStringArrayListExtra(EXTRA_RESULE)
+                val listView = (findViewById<ListView>(R.id.lvActiveApps))
+                val adapter = listView.adapter as ActiveAppsListAdapter
+                adapter.setItems(result)
+            }
+        }
     }
 }
