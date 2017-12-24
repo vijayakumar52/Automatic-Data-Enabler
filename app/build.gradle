@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "25.0.0"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
         applicationId "com.adsonik.autodataenabler"
-        minSdkVersion 8
-        targetSdkVersion 21
+        minSdkVersion 16
+        targetSdkVersion 26
     }
 
     buildTypes {
@@ -19,6 +20,10 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:design:26.1.0'
+    compile project(":Android-Utils")
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }

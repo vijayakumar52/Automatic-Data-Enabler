@@ -8,5 +8,23 @@
     <string name="some_text">
      Some North American Countries!
  </string>
+    <string name="ui_wifi">Wifi</string>
+    <string name="ui_2g">2G/3G</string>
+    <string name="ui_need_help">Need Help?</string>
+    <string name="ui_automatic_data">Automatic Data</string>
+    <string name="ui_activate">Activate</string>
+    <string name="ui_preferred_con_type">Preferred Connection Type</string>
+    <string name="ui_active_apps">Active apps</string>
+    <string name="ui_empty">Empty</string>
+    <string name="ui_pick_apps">Pick Apps</string>
+    <string name="noti_title">Service Started</string>
+    <string name="noti_content">Service started in background to keep track of running apps</string>
+    <string name="alarm_scheduled">Alarm Scheduled!</string>
+    <string name="alarm_canceled">Alarm Canceled!</string>
+    <string name="toast_wifi_enabled">Wifi Enabled!</string>
+    <string name="toast_wifi_disabled">Wifi Disabled!</string>
+    <string name="toast_mobiledata_enabled">Mobile data enabled!</string>
+    <string name="toast_mobiledata_disabled">Mobile data disabled!</string>
+    <string name="toast_please_select_atlease_one_app">Please select at least one application :-(</string>
 
 </resources>

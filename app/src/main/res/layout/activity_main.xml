@@ -1,154 +1,104 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/technical">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tvSwitchTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ui_automatic_data"
+            android:textSize="16sp" />
+
+        <Switch
+            android:id="@+id/masterSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvPreferredConType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/ui_preferred_con_type"
+        android:textSize="16sp" />
 
     <RadioGroup
-        android:id="@+id/radioGroup1"
+        android:id="@+id/conRadioGrp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/txtVw1"
-        android:layout_centerHorizontal="true">
-          <RadioButton
-             android:id="@+id/radioWifi"
-             android:layout_marginTop="5dp"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:checked="true"
-             android:text="Wifi"
-             android:textSize="20dp" />
-         <RadioButton
-             android:id="@+id/radio2G"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-           
-             android:text="2G/3G"
-             android:textSize="20dp" />
-  
+        android:padding="8dp">
+
+        <RadioButton
+            android:id="@+id/radioWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/ui_wifi"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/radio2G"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ui_2g"
+            android:textSize="16sp" />
+
     </RadioGroup>
 
-         <TextView
-             android:id="@+id/txtVwHelp"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_alignParentBottom="true"
-             android:layout_alignParentRight="true"
-             android:layout_marginRight="10dp"
-             android:text="Need Help?"
-             android:textSize="20dp" 
-             android:textColor="#000000"/>
 
-         <ToggleButton
-             android:id="@+id/toggleBtn"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_alignParentRight="true"
-             android:layout_alignParentTop="true"
-             android:layout_weight="0.2"
-             android:textOn=""
-             android:textOff=""
-             android:background="@drawable/my_toggle_button"
-             android:layout_marginTop="15dp" 
-             android:layout_marginRight="5dp"/>
+    <Button
+        android:id="@+id/btnPickApps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button"
+        android:text="@string/ui_pick_apps"
+        android:textColor="#FFFFFF" />
 
-       
+    <TextView
+        android:id="@+id/tvActiveApps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/ui_active_apps"
+        android:textSize="16sp" />
 
-         <TextView
-             android:id="@+id/txtTitle"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_alignBaseline="@+id/toggleBtn"
-             android:layout_alignBottom="@+id/toggleBtn"
-             android:layout_alignParentLeft="true"
-             android:text="Automatic Data"
-             android:layout_marginLeft="10dp"
-             android:textSize="20dp" 
-             android:textColor="#000000"
-             android:layout_marginTop="15dp"/>
+    <ListView
+        android:id="@+id/lvActiveApps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
+        android:divider="#000"
+        android:dividerHeight="0.6dp"
+        android:listSelector="@drawable/item_bg"
+        android:layout_weight="1"
+        android:padding="8dp" />
 
-         <ListView
-             android:id="@+id/listView21"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:choiceMode="singleChoice"
-             android:layout_below="@+id/txtVw2"
-             android:layout_above="@+id/button1"
-             android:divider="#000"
-             android:dividerHeight="0.6dp"
-             android:listSelector="@drawable/item_bg"
-             android:layout_marginBottom="5dp" >
-         </ListView>
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ui_empty"
+        android:textSize="16sp" />
 
-         <Button
-             android:id="@+id/button1"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_above="@+id/txtVwHelp"
-             android:layout_centerHorizontal="true"
-             android:text="       Activate       "
-             android:textColor="#FFFFFF"
-           android:background="@drawable/button2"
-             android:visibility="visible" />
-
-         <TextView
-             android:id="@+id/txtVw1"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_below="@+id/toggleBtn"
-             android:layout_marginLeft="10dp"
-             android:layout_marginTop="10dp"
-             android:text="Preferred Connection Type"
-             android:textSize="20dp"
-             android:textColor="#000000" />
-
-         <TextView
-             android:id="@+id/txtVw2"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_alignParentLeft="true"
-             android:layout_below="@+id/btnpickapp"
-             android:layout_marginTop="10dp"
-             android:text="Selected Applications"
-             android:layout_marginLeft="10dp"
-             android:textSize="20dp"
-             android:textColor="#000000" />
-
-         <TextView
-             android:id="@+id/txtViewApp"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-        
-             android:layout_below="@+id/txtVw2"
-             android:layout_marginTop="30dp"
-             android:layout_centerHorizontal="true"
-           
-             android:text="Empty"
-             android:textColor="#000000"
-             android:textSize="20dp" />
-
-         <TextView
-             android:id="@+id/textView1"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_below="@+id/radioGroup1"
-             android:layout_alignLeft="@+id/txtVw2"
-             android:text="Select Applications "
-             android:textSize="20dp"
-             android:textColor="#000000"
-              />
-
-         <Button
-             android:id="@+id/btnpickapp"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_below="@+id/textView1"
-         	android:layout_marginTop="3dp"
-             android:layout_centerHorizontal="true"
-             android:background="@drawable/button"
-             android:text="Pick Applications"
-             android:textColor="#FFFFFF" />
-
-</RelativeLayout>
+    <Button
+        android:id="@+id/btnActivate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button2"
+        android:text="@string/ui_activate"
+        android:textColor="#FFFFFF" />
+</LinearLayout>
