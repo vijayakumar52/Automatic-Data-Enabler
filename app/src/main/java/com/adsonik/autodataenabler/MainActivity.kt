@@ -34,6 +34,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
         val btnPickApps = bind<TextView>(this, R.id.btnPickApps)
         val lvActiveApps = bind<ListView>(this, R.id.lvActiveApps)
 
+        //Updating values
+        val status: Boolean = PrefUtils.getPrefValueBoolean(this, PREF_STATUS)
+        masterSwitch.isChecked = status
+
         var curPreference = PrefUtils.getPrefValueInt(this, PREF_PREFERENCE);
         if (curPreference == -1) {
             curPreference = 0
@@ -43,18 +47,22 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
         } else if (curPreference == 1) {
             conRadioGroup.check(R.id.radio2G)
         }
+
+        lvActiveApps.adapter = ActiveAppsListAdapter(this, getActiveAppsFromPref())
+        lvActiveApps.emptyView = findViewById<TextView>(R.id.tvEmpty)
+        lvActiveApps.onItemLongClickListener = this
+
         masterSwitch.setOnCheckedChangeListener { compoundButton, isChecked ->
             if (isChecked) {
                 scheduleTask(this)
+                ToastUtils.showToast(this, R.string.alarm_scheduled)
                 val id = conRadioGroup.checkedRadioButtonId
                 setCurrentPreference(id)
             } else {
                 cancelTask(this)
+                ToastUtils.showToast(this, R.string.alarm_canceled)
             }
         }
-
-        lvActiveApps.adapter = ActiveAppsListAdapter(this, getActiveAppsFromPref())
-        lvActiveApps.emptyView = findViewById<TextView>(R.id.tvEmpty)
 
         btnPickApps.setOnClickListener { _ ->
             val intent = Intent(this, AppDisplay::class.java)
@@ -62,7 +70,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
             startActivityForResult(intent, REQUEST_CODE)
         }
 
-        lvActiveApps.onItemLongClickListener = this
     }
 
     fun getActiveAppsFromPref(): ArrayList<String> {
@@ -114,7 +121,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
 
     public companion object {
         fun scheduleTask(context: Context) {
-            val interval = 5 * 5000
+            val interval = 5 * 1000
             val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
             val pendingIntent = getAlarmPendingIntent(context)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -122,7 +129,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
             } else {
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + interval, pendingIntent)
             }
-            ToastUtils.showToast(context, R.string.alarm_scheduled)
+            PrefUtils.setPrefValueBoolean(context, PREF_STATUS, true)
         }
 
         fun getAlarmPendingIntent(context: Context): PendingIntent {
@@ -134,11 +141,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
         fun cancelTask(context: Context) {
             val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(getAlarmPendingIntent(context))
-            ToastUtils.showToast(context, R.string.alarm_canceled)
+            PrefUtils.setPrefValueBoolean(context, PREF_STATUS, false)
         }
 
         val PREF_WHITELISTED_APPS: String = "whiteListedApps"
         val PREF_PREFERENCE: String = "preference"
+        val PREF_STATUS: String = "status"
         val REQUEST_CODE = 1010
         @JvmField
         val EXTRA_RESULE = "packages"
