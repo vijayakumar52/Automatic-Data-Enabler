@@ -1,14 +1,11 @@
 package com.adsonik.autodataenabler
 
 import android.annotation.SuppressLint
-import android.app.usage.UsageEvents
-import android.app.usage.UsageStatsManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.wifi.WifiManager
-import android.os.Build
-import android.support.annotation.RequiresApi
+import com.rvalerio.fgchecker.AppChecker
 import com.vijay.androidutils.Logger
 import com.vijay.androidutils.PrefUtils
 
@@ -19,35 +16,26 @@ import com.vijay.androidutils.PrefUtils
 
 class AlarmReceiver : BroadcastReceiver() {
     val TAG = AlarmReceiver::class.java.simpleName
-    var context: Context? = null
     override fun onReceive(context: Context, intent: Intent) {
         Logger.d(TAG, "onReceive called")
-        this.context = context
-        doYourWork()
         MainActivity.scheduleTask(context)
+        doYourWork(context)
     }
 
-    fun doYourWork() {
-        val whiteListedApps = PrefUtils.getStringSet(this.context, MainActivity.PREF_WHITELISTED_APPS)
-        val isMyAppRunning = isMyActivityRunning(whiteListedApps)
+    fun doYourWork(context: Context) {
+        val whiteListedApps = PrefUtils.getStringSet(context, MainActivity.PREF_WHITELISTED_APPS)
+        val isMyAppRunning = isMyActivityRunning(context, whiteListedApps)
         if (isMyAppRunning) {
-            enableWifi(true)
+            enableWifi(context, true)
         } else {
-            enableWifi(false)
+            enableWifi(context, false)
         }
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    fun isMyActivityRunning(packageInfo: Set<String>): Boolean {
-        val currentTime = System.currentTimeMillis()
-        val usageStatsManager = context?.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-        val queryEvents = usageStatsManager.queryEvents(currentTime - 30000, currentTime) as UsageEvents
-
-        while (queryEvents.hasNextEvent()) {
-            val event = UsageEvents.Event()
-            queryEvents.getNextEvent(event)
-            val packageName: String = event.packageName
+    fun isMyActivityRunning(context: Context, packageInfo: Set<String>): Boolean {
+        val packageName = getTopPackageName(context)
+        if (packageName != null) {
             val iterator: Iterator<String> = packageInfo.iterator()
             while (iterator.hasNext()) {
                 val whiteListedName = iterator.next();
@@ -58,18 +46,39 @@ class AlarmReceiver : BroadcastReceiver() {
         }
         return false
     }
+}
 
-    @SuppressLint("WifiManagerLeak")
-    fun enableWifi(enable: Boolean) {
-        var wifi = this.context?.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        if (enable) {
-            if (!wifi.isWifiEnabled) {
-                wifi.isWifiEnabled = true
+fun getTopPackageName(context: Context): String? {
+    var topPackageName: String? = null
+   /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        val mUsageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val time = System.currentTimeMillis()
+        // We get usage stats for the last 10 seconds
+        val stats = mUsageStatsManager.queryEvents(time - 1000 * 10, time)
+        while (stats.hasNextEvent()) {
+            val event = UsageEvents.Event()
+            stats.getNextEvent(event)
+            if (event.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
+                return event.packageName;
             }
-        } else {
-            if (wifi.isWifiEnabled) {
-                wifi.isWifiEnabled = false
-            }
+        }
+    }*/
+
+    val appChecker = AppChecker()
+    topPackageName = appChecker.getForegroundApp(context)
+    return topPackageName
+}
+
+@SuppressLint("WifiManagerLeak", "WifiManagerPotentialLeak")
+fun enableWifi(context: Context, enable: Boolean) {
+    var wifi = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    if (enable) {
+        if (!wifi.isWifiEnabled) {
+            wifi.isWifiEnabled = true
+        }
+    } else {
+        if (wifi.isWifiEnabled) {
+            wifi.isWifiEnabled = false
         }
     }
 }

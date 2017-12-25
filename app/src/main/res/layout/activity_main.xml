@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/ltgray"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -8,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:layout_marginBottom="16dp">
 
         <TextView
             android:id="@+id/tvSwitchTitle"
@@ -28,44 +29,43 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/ltgray"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@android:color/white">
 
         <TextView
             android:id="@+id/tvActiveApps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ui_active_apps"
             android:layout_alignParentLeft="true"
             android:padding="8dp"
+            android:text="@string/ui_active_apps"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/btnPickApps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ui_pick_apps"
-            android:textStyle="bold"
             android:layout_alignParentRight="true"
-            android:textColor="@color/txtBtnColor"
             android:padding="8dp"
-            />
+            android:text="@string/ui_pick_apps"
+            android:textColor="@color/txtBtnColor"
+            android:textStyle="bold" />
 
         <ListView
             android:id="@+id/lvActiveApps"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:divider="@null"
-            android:layout_below="@+id/tvActiveApps" />
+            android:layout_below="@+id/tvActiveApps"
+            android:divider="@null" />
 
         <TextView
             android:id="@+id/tvEmpty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/tvActiveApps"
+            android:gravity="center"
             android:text="@string/ui_empty"
-            android:textSize="16sp"
-            android:gravity="center"/>
+            android:textSize="16sp" />
 
     </RelativeLayout>
 

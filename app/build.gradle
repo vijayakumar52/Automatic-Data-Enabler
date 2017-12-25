@@ -23,6 +23,7 @@ dependencies {
     compile 'com.android.support:design:26.1.0'
     compile project(":Android-Utils")
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'com.rvalerio:fgchecker:1.1.0'
 }
 repositories {
     mavenCentral()
