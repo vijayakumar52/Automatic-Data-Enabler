@@ -61,7 +61,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="8dp"
         android:background="@color/ltgray"
         android:layout_weight="1">
 
@@ -71,6 +70,7 @@
             android:layout_height="wrap_content"
             android:text="@string/ui_active_apps"
             android:layout_alignParentLeft="true"
+            android:padding="8dp"
             android:textSize="16sp" />
 
         <TextView
@@ -81,14 +81,14 @@
             android:textStyle="bold"
             android:layout_alignParentRight="true"
             android:textColor="@color/txtBtnColor"
+            android:padding="8dp"
             />
 
         <ListView
             android:id="@+id/lvActiveApps"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:divider="#000"
-            android:dividerHeight="0.6dp"
+            android:layout_height="match_parent"
+            android:divider="@null"
             android:layout_below="@+id/tvActiveApps" />
 
         <TextView

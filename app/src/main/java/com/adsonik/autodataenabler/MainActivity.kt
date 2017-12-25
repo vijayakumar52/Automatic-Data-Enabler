@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         lvActiveApps.adapter = ActiveAppsListAdapter(this, activeAppsList)
         lvActiveApps.emptyView = findViewById<TextView>(R.id.tvEmpty)
 
-        btnActivate.setOnClickListener { view ->
+        btnActivate.setOnClickListener { _ ->
             val activeAppsAdapter = lvActiveApps.adapter as ActiveAppsListAdapter
             val allItems = activeAppsAdapter.allItems
             if (allItems.size > 0) {
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        btnPickApps.setOnClickListener { view ->
+        btnPickApps.setOnClickListener { _ ->
             val intent = Intent(this, AppDisplay::class.java)
             intent.putStringArrayListExtra(EXTRA_RESULE, activeAppsList)
             startActivityForResult(intent, REQUEST_CODE)
@@ -140,6 +140,13 @@ class MainActivity : AppCompatActivity() {
                 val listView = (findViewById<ListView>(R.id.lvActiveApps))
                 val adapter = listView.adapter as ActiveAppsListAdapter
                 adapter.setItems(result)
+
+                val btnView = bind<Button>(this, R.id.btnActivate);
+                if (result.size > 0) {
+                    btnView.visibility = View.VISIBLE
+                }else{
+                    btnView.visibility = View.GONE
+                }
             }
         }
     }

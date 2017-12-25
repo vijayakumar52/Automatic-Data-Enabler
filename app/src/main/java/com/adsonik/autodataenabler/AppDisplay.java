@@ -7,10 +7,11 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,7 +29,6 @@ import java.util.List;
 public class AppDisplay extends AppCompatActivity implements OnItemClickListener {
 
     ListView lvAllApps;
-    Button btnn;
     ArrayList<String> whiteListedApps;
     PackageInfo pi = new PackageInfo();
 
@@ -39,8 +39,8 @@ public class AppDisplay extends AppCompatActivity implements OnItemClickListener
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle(R.string.ui_installed_apps);
         setContentView(R.layout.app_display);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         lvAllApps = (ListView) findViewById(R.id.lvAllApps);
-        btnn = (Button) findViewById(R.id.btnSave);
 
         lvAllApps.setEmptyView(findViewById(R.id.progressBar));
         List<PackageInfo> userInsalledApps = new ArrayList<>();
@@ -49,17 +49,6 @@ public class AppDisplay extends AppCompatActivity implements OnItemClickListener
 
         lvAllApps.setAdapter(Adapter);
         lvAllApps.setOnItemClickListener(this);
-        btnn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Intent returnIntent = new Intent();
-                returnIntent.putStringArrayListExtra(MainActivity.EXTRA_RESULE, whiteListedApps);
-                setResult(RESULT_OK, returnIntent);
-                finish();
-
-            }
-        });
 
         new Loader().execute();
     }
@@ -98,6 +87,26 @@ public class AppDisplay extends AppCompatActivity implements OnItemClickListener
             super.onPostExecute(allApps);
             lvAllApps.setAdapter(new Listadapter(AppDisplay.this, allApps, whiteListedApps));
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (android.R.id.home == id) {
+            finish();
+        } else if(R.id.save == id){
+            Intent returnIntent = new Intent();
+            returnIntent.putStringArrayListExtra(MainActivity.EXTRA_RESULE, whiteListedApps);
+            setResult(RESULT_OK, returnIntent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

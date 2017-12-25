@@ -27,7 +27,6 @@
     <string name="toast_mobiledata_disabled">Mobile data disabled!</string>
     <string name="toast_please_select_atlease_one_app">Please select at least one application :-(</string>
     <string name="toast_apps_added">Apps added!</string>
-    <string name="ui_save_changes">Save Changes</string>
     <string name="ui_installed_apps">Installed Apps</string>
 
 </resources>
