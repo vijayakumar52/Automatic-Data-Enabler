@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val masterSwitch = bind<Switch>(this, R.id.masterSwitch)
         val conRadioGroup = bind<RadioGroup>(this, R.id.conRadioGrp)
-        val btnPickApps = bind<Button>(this, R.id.btnPickApps)
+        val btnPickApps = bind<TextView>(this, R.id.btnPickApps)
         val lvActiveApps = bind<ListView>(this, R.id.lvActiveApps)
         val btnActivate = bind<Button>(this, R.id.btnActivate)
 

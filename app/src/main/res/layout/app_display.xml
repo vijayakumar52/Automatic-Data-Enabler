@@ -3,33 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1"
-  >
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:choiceMode="singleChoice"
-        android:divider="#000"
-        android:dividerHeight="0.6dp"
-        android:listSelector="@drawable/item_bg"
-        android:layout_weight="1"
-         />
-    
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/lvAllApps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:divider="#000"
+            android:dividerHeight="0.6dp"
+            android:padding="16dp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
     <Button
-         android:layout_weight="9"
+        android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:id="@+id/btnreturn"
-        android:text="    Save Changes    "
-      android:background="@drawable/button2"
-      android:layout_gravity="center"
-      android:textColor="#FFFFFF"
-      android:layout_marginBottom="10dp" 
-           />
-        
-        
-        
-        
-    
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/txtColorBlack"
+        android:text="@string/ui_save_changes" />
+
 </LinearLayout>

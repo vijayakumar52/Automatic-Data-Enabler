@@ -4,8 +4,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,11 +27,9 @@ import java.util.List;
 
 public class AppDisplay extends AppCompatActivity implements OnItemClickListener {
 
-    ListView apps;
+    ListView lvAllApps;
     Button btnn;
-    PackageManager packageManager;
-    int n;
-    ArrayList<String> packageValue;
+    ArrayList<String> whiteListedApps;
     PackageInfo pi = new PackageInfo();
 
 
@@ -40,74 +37,79 @@ public class AppDisplay extends AppCompatActivity implements OnItemClickListener
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setTitle(R.string.ui_installed_apps);
         setContentView(R.layout.app_display);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(248, 174, 16)));
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle("Installed Applications");
-        apps = (ListView) findViewById(R.id.listView1);
-        apps.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        packageManager = getPackageManager();
-        packageValue = new ArrayList<String>();
-        btnn = (Button) findViewById(R.id.btnreturn);
+        lvAllApps = (ListView) findViewById(R.id.lvAllApps);
+        btnn = (Button) findViewById(R.id.btnSave);
 
-        final List<PackageInfo> packageList = packageManager
-                .getInstalledPackages(PackageManager.GET_META_DATA); // all apps in the phone
-        final List<PackageInfo> packageList1 = packageManager
-                .getInstalledPackages(0);
-        try {
-            packageList1.clear();
-            for (n = 0; n < packageList.size(); n++) {
-                PackageInfo PackInfo = packageList.get(n);
-                if (((PackInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) != true) {
-                    try {
-                        packageList1.add(packageList.get(n)); // add in 2nd list if it is user installed app
-                        Collections.sort(packageList1, new Comparator<PackageInfo>()
-                                // this will sort App list on the basis of app name
-                        {
-                            public int compare(PackageInfo o1, PackageInfo o2) {
-                                return o1.applicationInfo.loadLabel(getPackageManager()).toString()
-                                        .compareToIgnoreCase(o2.applicationInfo.loadLabel(getPackageManager())
-                                                .toString());// compare and return sorted packagelist.
+        lvAllApps.setEmptyView(findViewById(R.id.progressBar));
+        List<PackageInfo> userInsalledApps = new ArrayList<>();
+        whiteListedApps = getIntent().getStringArrayListExtra(MainActivity.EXTRA_RESULE);
+        Listadapter Adapter = new Listadapter(this, userInsalledApps, whiteListedApps);
 
-                            }
-                        });
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        List<String> whiteListedApps = getIntent().getStringArrayListExtra(MainActivity.EXTRA_RESULE);
-        Listadapter Adapter = new Listadapter(this, packageList1, whiteListedApps);
-
-        apps.setAdapter(Adapter);
-        apps.setOnItemClickListener(this);
+        lvAllApps.setAdapter(Adapter);
+        lvAllApps.setOnItemClickListener(this);
         btnn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
                 Intent returnIntent = new Intent();
-                returnIntent.putStringArrayListExtra(MainActivity.EXTRA_RESULE, packageValue);
+                returnIntent.putStringArrayListExtra(MainActivity.EXTRA_RESULE, whiteListedApps);
                 setResult(RESULT_OK, returnIntent);
                 finish();
 
             }
         });
+
+        new Loader().execute();
+    }
+
+    class Loader extends AsyncTask<Object, Integer, List<PackageInfo>> {
+
+        @Override
+        protected List<PackageInfo> doInBackground(Object[] objects) {
+            List<PackageInfo> allApps = new ArrayList<>();
+            final List<PackageInfo> packageList = getPackageManager().getInstalledPackages(PackageManager.GET_META_DATA); // all lvAllApps in the phone
+
+            for (int i = 0; i < packageList.size(); i++) {
+                PackageInfo packageInfo = packageList.get(i);
+                if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                    allApps.add(packageInfo); // add in 2nd list if it is user installed app
+                }
+            }
+
+            //Sort list
+
+            Collections.sort(allApps, new Comparator<PackageInfo>() {
+                public int compare(PackageInfo o1, PackageInfo o2) {
+                    return o1.applicationInfo.loadLabel(getPackageManager()).toString()
+                            .compareToIgnoreCase(o2.applicationInfo.loadLabel(getPackageManager())
+                                    .toString());// compare and return sorted packagelist.
+
+                }
+            });
+
+            return allApps;
+        }
+
+
+        @Override
+        protected void onPostExecute(List<PackageInfo> allApps) {
+            super.onPostExecute(allApps);
+            lvAllApps.setAdapter(new Listadapter(AppDisplay.this, allApps, whiteListedApps));
+        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
-        // TODO Auto-generated method stub
-        CheckBox cb = (CheckBox) v.findViewById(R.id.checkBox1);
-        TextView tv = (TextView) v.findViewById(R.id.textView1);
+        CheckBox cb = (CheckBox) v.findViewById(R.id.cbSelect);
+        TextView tv = (TextView) v.findViewById(R.id.tvAppName);
         pi = (PackageInfo) arg0.getItemAtPosition(arg2);
         cb.performClick();
         if (cb.isChecked()) {
-            packageValue.add(pi.packageName);
+            whiteListedApps.add(pi.packageName);
         } else {
-            packageValue.remove(pi.packageName);
+            whiteListedApps.remove(pi.packageName);
         }
     }
 }

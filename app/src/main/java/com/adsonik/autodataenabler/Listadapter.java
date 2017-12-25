@@ -11,6 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.vijay.androidutils.DisplayUtils;
+
 import java.util.List;
 
 public class Listadapter extends BaseAdapter {
@@ -19,9 +21,6 @@ public class Listadapter extends BaseAdapter {
     private List<String> whiteListedList;
     private Activity context;
     private PackageManager packageManager;
-    private String[] list;
-    private String appName1;
-    private int size = 0;
 
     public Listadapter(Activity context, List<PackageInfo> packageList, List<String> whitlistedList) {
         super();
@@ -53,10 +52,10 @@ public class Listadapter extends BaseAdapter {
         final ViewHolder holder;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item, null);
+            convertView = inflater.inflate(R.layout.all_apps_component, null);
             holder = new ViewHolder();
-            holder.apkName = (TextView) convertView.findViewById(R.id.textView1);
-            holder.ck1 = (CheckBox) convertView.findViewById(R.id.checkBox1);
+            holder.apkName = (TextView) convertView.findViewById(R.id.tvAppName);
+            holder.ck1 = (CheckBox) convertView.findViewById(R.id.cbSelect);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -65,9 +64,9 @@ public class Listadapter extends BaseAdapter {
 
         Drawable appIcon = packageManager.getApplicationIcon(packageInfo.applicationInfo);
         String appName = packageManager.getApplicationLabel(packageInfo.applicationInfo).toString();
-        appName1 = packageInfo.packageName;
 
-        appIcon.setBounds(0, 0, 60, 60);
+        int width = (int) DisplayUtils.convertDpToPixel(30, context);
+        appIcon.setBounds(0, 0, width, width);
         holder.apkName.setCompoundDrawables(appIcon, null, null, null);
         holder.apkName.setCompoundDrawablePadding(15);
         holder.apkName.setText(appName);
