@@ -18,5 +18,6 @@
     <string name="title_permission_not_available">Permission required!</string>
     <string name="dialog_content_permission_not_available"><![CDATA[ Please enable <b>Allow usage tracking</b> in Settings to enable this feature.]]></string>
     <string name="title_open_settings">Open Settings</string>
+    <string name="ui_select_atleast_one_apps">Please pick at least one application!</string>
 
 </resources>

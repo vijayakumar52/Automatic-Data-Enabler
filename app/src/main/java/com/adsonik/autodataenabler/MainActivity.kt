@@ -49,23 +49,29 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
 
         masterSwitch.setOnClickListener { view ->
             if (masterSwitch.isChecked) {
-                if (!needsUsageStatsPermission()) {
-                    scheduleTask(this)
-                    ToastUtils.showToast(this, R.string.alarm_scheduled)
-                } else {
-                    val title = resources.getString(R.string.title_permission_not_available)
-                    var content = resources.getString(R.string.dialog_content_permission_not_available).toSpanned()
-                    val posText = resources.getString(R.string.title_open_settings).toUpperCase()
-                    val negText = resources.getString(R.string.title_cancel)
-                    DialogUtils.getInstance().twoButtonDialog(this, title, content, posText, negText, false, { dialog, which ->
-                        if (which == DialogAction.POSITIVE) {
-                            requestUsageStatsPermission()
-                        } else {
+                val activeApps = PrefUtils.getStringSet(this, PREF_WHITELISTED_APPS)
+                if (activeApps != null) {
+                    if (!needsUsageStatsPermission()) {
+                        scheduleTask(this)
+                        ToastUtils.showToast(this, R.string.alarm_scheduled)
+                    } else {
+                        val title = resources.getString(R.string.title_permission_not_available)
+                        var content = resources.getString(R.string.dialog_content_permission_not_available).toSpanned()
+                        val posText = resources.getString(R.string.title_open_settings).toUpperCase()
+                        val negText = resources.getString(R.string.title_cancel)
+                        DialogUtils.getInstance().twoButtonDialog(this, title, content, posText, negText, false, { dialog, which ->
+                            if (which == DialogAction.POSITIVE) {
+                                requestUsageStatsPermission()
+                            } else {
+                                validateCheckbox()
+                            }
+                        }, {
                             validateCheckbox()
-                        }
-                    }, {
-                        validateCheckbox()
-                    })
+                        })
+                    }
+                } else {
+                    validateCheckbox()
+                    ToastUtils.showToast(this, R.string.ui_select_atleast_one_apps)
                 }
             } else {
                 cancelTask(this)
@@ -156,16 +162,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
     }
 
 
-    public companion object {
+    companion object {
         fun scheduleTask(context: Context) {
             val interval = 5 * 1000
             val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
             val pendingIntent = getAlarmPendingIntent(context)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + interval, pendingIntent)
-            } else {
-                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + interval, pendingIntent)
-            }
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + interval, pendingIntent)
             PrefUtils.setPrefValueBoolean(context, PREF_STATUS, true)
         }
 

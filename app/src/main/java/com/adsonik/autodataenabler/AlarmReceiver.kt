@@ -15,7 +15,7 @@ import com.vijay.androidutils.PrefUtils
  */
 
 class AlarmReceiver : BroadcastReceiver() {
-    val TAG = AlarmReceiver::class.java.simpleName
+    public val TAG = AlarmReceiver::class.java.simpleName
     override fun onReceive(context: Context, intent: Intent) {
         Logger.d(TAG, "onReceive called")
         MainActivity.scheduleTask(context)
@@ -46,11 +46,11 @@ class AlarmReceiver : BroadcastReceiver() {
         }
         return false
     }
-}
 
-fun getTopPackageName(context: Context): String? {
-    var topPackageName: String? = null
-   /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+    fun getTopPackageName(context: Context): String? {
+        var topPackageName: String? = null
+        /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         val mUsageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
         val time = System.currentTimeMillis()
         // We get usage stats for the last 10 seconds
@@ -64,21 +64,24 @@ fun getTopPackageName(context: Context): String? {
         }
     }*/
 
-    val appChecker = AppChecker()
-    topPackageName = appChecker.getForegroundApp(context)
-    return topPackageName
-}
+        val appChecker = AppChecker()
+        topPackageName = appChecker.getForegroundApp(context)
+        return topPackageName
+    }
 
-@SuppressLint("WifiManagerLeak", "WifiManagerPotentialLeak")
-fun enableWifi(context: Context, enable: Boolean) {
-    var wifi = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    if (enable) {
-        if (!wifi.isWifiEnabled) {
-            wifi.isWifiEnabled = true
-        }
-    } else {
-        if (wifi.isWifiEnabled) {
-            wifi.isWifiEnabled = false
+    @SuppressLint("WifiManagerLeak", "WifiManagerPotentialLeak")
+    fun enableWifi(context: Context, enable: Boolean) {
+        var wifi = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        if (enable) {
+            if (!wifi.isWifiEnabled) {
+                wifi.isWifiEnabled = true
+                Logger.d(TAG, "Wifi Enabled")
+            }
+        } else {
+            if (wifi.isWifiEnabled) {
+                wifi.isWifiEnabled = false
+                Logger.d(TAG, "Wifi Disabled")
+            }
         }
     }
 }
