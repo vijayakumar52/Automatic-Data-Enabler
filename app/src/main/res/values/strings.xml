@@ -13,8 +13,8 @@
     <string name="ui_pick_apps">PICK APPS</string>
     <string name="noti_title">Service Started</string>
     <string name="noti_content">Service started in background to keep track of running apps</string>
-    <string name="alarm_scheduled">Alarm Scheduled!</string>
-    <string name="alarm_canceled">Alarm Canceled!</string>
+    <string name="alarm_scheduled">Service activated!</string>
+    <string name="alarm_canceled">Service canceled!</string>
     <string name="toast_wifi_enabled">Wifi Enabled!</string>
     <string name="toast_wifi_disabled">Wifi Disabled!</string>
     <string name="toast_mobiledata_enabled">Mobile data enabled!</string>
@@ -27,5 +27,8 @@
     <string name="title_remove">Remove</string>
     <string name="title_cancel">Cancel</string>
     <string name="toast_app_removed">App removed successfully!</string>
+    <string name="title_permission_not_available">Need permission</string>
+    <string name="dialog_content_permission_not_available">Please allow app to access Usage Statistics in Settings.</string>
+    <string name="title_open_settings">Open Settings</string>
 
 </resources>

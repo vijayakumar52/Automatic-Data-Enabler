@@ -39,21 +39,28 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
         val btnPickApps = bind<TextView>(this, R.id.btnPickApps)
         val lvActiveApps = bind<ListView>(this, R.id.lvActiveApps)
 
-        //Updating values
-        val status: Boolean = PrefUtils.getPrefValueBoolean(this, PREF_STATUS)
-        masterSwitch.isChecked = status
-
         lvActiveApps.adapter = ActiveAppsListAdapter(this, getActiveAppsFromPref())
         lvActiveApps.emptyView = findViewById<TextView>(R.id.tvEmpty)
         lvActiveApps.onItemLongClickListener = this
 
+        validateCheckbox()
         masterSwitch.setOnCheckedChangeListener { compoundButton, isChecked ->
             if (isChecked) {
                 if (!needsUsageStatsPermission()) {
                     scheduleTask(this)
                     ToastUtils.showToast(this, R.string.alarm_scheduled)
                 } else {
-                    requestUsageStatsPermission()
+                    val title = resources.getString(R.string.title_permission_not_available)
+                    val content = resources.getString(R.string.dialog_content_permission_not_available)
+                    val posText = resources.getString(R.string.title_open_settings).toUpperCase()
+                    val negText = resources.getString(R.string.title_cancel)
+                    DialogUtils.getInstance().twoButtonDialog(this, title, content, posText, negText, false, MaterialDialog.SingleButtonCallback { dialog, which ->
+                        if (which == DialogAction.POSITIVE) {
+                            requestUsageStatsPermission()
+                        }else{
+                            validateCheckbox()
+                        }
+                    }, null)
                 }
             } else {
                 cancelTask(this)
@@ -67,6 +74,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
             startActivityForResult(intent, REQUEST_CODE)
         }
 
+    }
+
+    fun validateCheckbox() {
+        val masterSwitch = bind<Switch>(this, R.id.masterSwitch)
+        val status: Boolean = PrefUtils.getPrefValueBoolean(this, PREF_STATUS)
+        masterSwitch.isChecked = status
     }
 
     private fun needsUsageStatsPermission(): Boolean {
