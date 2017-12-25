@@ -6,15 +6,11 @@ import android.app.usage.UsageStatsManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.support.annotation.RequiresApi
 import com.vijay.androidutils.Logger
 import com.vijay.androidutils.PrefUtils
-import java.lang.reflect.Field
-import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
 
 
 /**
@@ -32,18 +28,12 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     fun doYourWork() {
-        val preference = PrefUtils.getPrefValueInt(this.context, MainActivity.PREF_PREFERENCE)
         val whiteListedApps = PrefUtils.getStringSet(this.context, MainActivity.PREF_WHITELISTED_APPS)
         val isMyAppRunning = isMyActivityRunning(whiteListedApps)
         if (isMyAppRunning) {
-            if (preference == 0) {
-                enableWifi(true)
-            } else if (preference == 1) {
-                enableMobileData(true)
-            }
+            enableWifi(true)
         } else {
             enableWifi(false)
-            enableMobileData(false)
         }
     }
 
@@ -82,73 +72,4 @@ class AlarmReceiver : BroadcastReceiver() {
             }
         }
     }
-
-    fun enableMobileData(enable: Boolean) {
-        var conManager = this.context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val mobile = conManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-
-        if (enable) {
-            if (!mobile.isConnected) {
-                setMobileData(true)
-            }
-        } else {
-            if (mobile.isConnected) {
-                setMobileData(false)
-            }
-        }
-    }
-
-    private fun setMobileData(enabled: Boolean) {
-        var conmanClass: Class<*>? = null
-        var conManager = this.context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        try {
-            conmanClass = Class.forName(conManager.javaClass.getName())
-        } catch (e: ClassNotFoundException) {
-            e.printStackTrace()
-        }
-
-        var iConnectivityManagerField: Field? = null
-        try {
-            iConnectivityManagerField = conmanClass!!.getDeclaredField("mService")
-        } catch (e: NoSuchFieldException) {
-            e.printStackTrace()
-        }
-
-        iConnectivityManagerField!!.isAccessible = true
-        var iConnectivityManager: Any? = null
-        try {
-            iConnectivityManager = iConnectivityManagerField.get(conManager)
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
-
-        var iConnectivityManagerClass: Class<*>? = null
-        try {
-            iConnectivityManagerClass = Class.forName(iConnectivityManager!!.javaClass.name)
-        } catch (e: ClassNotFoundException) {
-            e.printStackTrace()
-        }
-
-        var setMobileDataEnabledMethod: Method? = null
-        try {
-            setMobileDataEnabledMethod = iConnectivityManagerClass!!.getDeclaredMethod("setMobileDataEnabled", java.lang.Boolean.TYPE)
-        } catch (e: NoSuchMethodException) {
-            e.printStackTrace()
-        }
-
-        setMobileDataEnabledMethod!!.isAccessible = true
-
-        try {
-            setMobileDataEnabledMethod.invoke(iConnectivityManager, enabled)
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        } catch (e: InvocationTargetException) {
-            e.printStackTrace()
-        }
-    }
-
 }

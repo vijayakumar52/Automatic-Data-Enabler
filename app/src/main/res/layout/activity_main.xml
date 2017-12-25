@@ -25,39 +25,6 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvPreferredConType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="@string/ui_preferred_con_type"
-        android:textSize="16sp" />
-
-    <RadioGroup
-        android:id="@+id/conRadioGrp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <RadioButton
-            android:id="@+id/radioWifi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/ui_wifi"
-            android:textSize="16sp" />
-
-        <RadioButton
-            android:id="@+id/radio2G"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ui_2g"
-            android:textSize="16sp" />
-
-    </RadioGroup>
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -30,23 +30,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val masterSwitch = bind<Switch>(this, R.id.masterSwitch)
-        val conRadioGroup = bind<RadioGroup>(this, R.id.conRadioGrp)
         val btnPickApps = bind<TextView>(this, R.id.btnPickApps)
         val lvActiveApps = bind<ListView>(this, R.id.lvActiveApps)
 
         //Updating values
         val status: Boolean = PrefUtils.getPrefValueBoolean(this, PREF_STATUS)
         masterSwitch.isChecked = status
-
-        var curPreference = PrefUtils.getPrefValueInt(this, PREF_PREFERENCE);
-        if (curPreference == -1) {
-            curPreference = 0
-        }
-        if (curPreference == 0) {
-            conRadioGroup.check(R.id.radioWifi)
-        } else if (curPreference == 1) {
-            conRadioGroup.check(R.id.radio2G)
-        }
 
         lvActiveApps.adapter = ActiveAppsListAdapter(this, getActiveAppsFromPref())
         lvActiveApps.emptyView = findViewById<TextView>(R.id.tvEmpty)
@@ -56,8 +45,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
             if (isChecked) {
                 scheduleTask(this)
                 ToastUtils.showToast(this, R.string.alarm_scheduled)
-                val id = conRadioGroup.checkedRadioButtonId
-                setCurrentPreference(id)
             } else {
                 cancelTask(this)
                 ToastUtils.showToast(this, R.string.alarm_canceled)
@@ -108,16 +95,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
         return activity.findViewById(res) as T
     }
 
-    fun setCurrentPreference(id: Int) {
-        var preference = 0;
-        if (R.id.radioWifi == id) {
-            preference = 0
-        } else if (R.id.radio2G == id) {
-            preference = 1;
-        }
-        PrefUtils.setPrefValueInt(this, PREF_PREFERENCE, preference);
-    }
-
 
     public companion object {
         fun scheduleTask(context: Context) {
@@ -145,7 +122,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
         }
 
         val PREF_WHITELISTED_APPS: String = "whiteListedApps"
-        val PREF_PREFERENCE: String = "preference"
         val PREF_STATUS: String = "status"
         val REQUEST_CODE = 1010
         @JvmField
