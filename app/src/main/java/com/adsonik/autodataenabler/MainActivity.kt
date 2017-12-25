@@ -1,17 +1,23 @@
 package com.adsonik.autodataenabler
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.app.AlarmManager
+import android.app.AppOpsManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
+import android.provider.Settings
 import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ListView
+import android.widget.Switch
+import android.widget.TextView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.vijay.androidutils.DialogUtils
@@ -43,8 +49,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
 
         masterSwitch.setOnCheckedChangeListener { compoundButton, isChecked ->
             if (isChecked) {
-                scheduleTask(this)
-                ToastUtils.showToast(this, R.string.alarm_scheduled)
+                if (!needsUsageStatsPermission()) {
+                    scheduleTask(this)
+                    ToastUtils.showToast(this, R.string.alarm_scheduled)
+                } else {
+                    requestUsageStatsPermission()
+                }
             } else {
                 cancelTask(this)
                 ToastUtils.showToast(this, R.string.alarm_canceled)
@@ -57,6 +67,29 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
             startActivityForResult(intent, REQUEST_CODE)
         }
 
+    }
+
+    private fun needsUsageStatsPermission(): Boolean {
+        return postLollipop() && !hasUsageStatsPermission(this)
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun requestUsageStatsPermission() {
+        if (!hasUsageStatsPermission(this)) {
+            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+        }
+    }
+
+    private fun postLollipop(): Boolean {
+        return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private fun hasUsageStatsPermission(context: Context): Boolean {
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = appOps.checkOpNoThrow("android:get_usage_stats",
+                android.os.Process.myUid(), context.packageName)
+        return mode == AppOpsManager.MODE_ALLOWED
     }
 
     fun getActiveAppsFromPref(): ArrayList<String> {
