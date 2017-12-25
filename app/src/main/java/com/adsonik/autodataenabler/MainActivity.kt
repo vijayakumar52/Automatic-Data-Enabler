@@ -13,6 +13,8 @@ import android.os.SystemClock
 import android.provider.Settings
 import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
+import android.text.Html
+import android.text.Spanned
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
@@ -44,23 +46,26 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
         lvActiveApps.onItemLongClickListener = this
 
         validateCheckbox()
-        masterSwitch.setOnCheckedChangeListener { compoundButton, isChecked ->
-            if (isChecked) {
+
+        masterSwitch.setOnClickListener { view ->
+            if (masterSwitch.isChecked) {
                 if (!needsUsageStatsPermission()) {
                     scheduleTask(this)
                     ToastUtils.showToast(this, R.string.alarm_scheduled)
                 } else {
                     val title = resources.getString(R.string.title_permission_not_available)
-                    val content = resources.getString(R.string.dialog_content_permission_not_available)
+                    var content = resources.getString(R.string.dialog_content_permission_not_available).toSpanned()
                     val posText = resources.getString(R.string.title_open_settings).toUpperCase()
                     val negText = resources.getString(R.string.title_cancel)
-                    DialogUtils.getInstance().twoButtonDialog(this, title, content, posText, negText, false, MaterialDialog.SingleButtonCallback { dialog, which ->
+                    DialogUtils.getInstance().twoButtonDialog(this, title, content, posText, negText, false, { dialog, which ->
                         if (which == DialogAction.POSITIVE) {
                             requestUsageStatsPermission()
-                        }else{
+                        } else {
                             validateCheckbox()
                         }
-                    }, null)
+                    }, {
+                        validateCheckbox()
+                    })
                 }
             } else {
                 cancelTask(this)
@@ -74,6 +79,15 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
             startActivityForResult(intent, REQUEST_CODE)
         }
 
+    }
+
+    fun String.toSpanned(): Spanned {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            @Suppress("DEPRECATION")
+            return Html.fromHtml(this)
+        }
     }
 
     fun validateCheckbox() {

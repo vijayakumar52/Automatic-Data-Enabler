@@ -2,33 +2,21 @@
 <resources>
     <string name="app_name">Automatic Data Enabler</string>
 
-    <string name="ui_wifi">Wifi</string>
-    <string name="ui_2g">2G/3G</string>
-    <string name="ui_need_help">Need Help?</string>
     <string name="ui_automatic_data">Automatic Data</string>
-    <string name="ui_add_apps">Add apps</string>
-    <string name="ui_preferred_con_type">Preferred Connection Type</string>
     <string name="ui_active_apps">Active apps</string>
-    <string name="ui_empty">No Application Selected</string>
+    <string name="ui_empty">You haven\'t picked any applications yet</string>
     <string name="ui_pick_apps">PICK APPS</string>
-    <string name="noti_title">Service Started</string>
-    <string name="noti_content">Service started in background to keep track of running apps</string>
     <string name="alarm_scheduled">Service activated!</string>
     <string name="alarm_canceled">Service canceled!</string>
-    <string name="toast_wifi_enabled">Wifi Enabled!</string>
-    <string name="toast_wifi_disabled">Wifi Disabled!</string>
-    <string name="toast_mobiledata_enabled">Mobile data enabled!</string>
-    <string name="toast_mobiledata_disabled">Mobile data disabled!</string>
-    <string name="toast_please_select_atlease_one_app">Please select at least one application :-(</string>
-    <string name="toast_apps_added">Apps added!</string>
+
     <string name="ui_installed_apps">Installed Apps</string>
     <string name="title_remove_app">Remove App</string>
     <string name="title_remove_app_content">Are you sure you want to remove this app from Whitelist?</string>
     <string name="title_remove">Remove</string>
     <string name="title_cancel">Cancel</string>
     <string name="toast_app_removed">App removed successfully!</string>
-    <string name="title_permission_not_available">Need permission</string>
-    <string name="dialog_content_permission_not_available">Please allow app to access Usage Statistics in Settings.</string>
+    <string name="title_permission_not_available">Permission required!</string>
+    <string name="dialog_content_permission_not_available"><![CDATA[ Please enable <b>Allow usage tracking</b> in Settings to enable this feature.]]></string>
     <string name="title_open_settings">Open Settings</string>
 
 </resources>

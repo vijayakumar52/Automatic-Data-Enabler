@@ -16,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ui_automatic_data"
+            android:textStyle="bold"
             android:textSize="16sp" />
 
         <Switch
@@ -38,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:padding="8dp"
+            android:textStyle="bold"
             android:text="@string/ui_active_apps"
             android:textSize="16sp" />
 
