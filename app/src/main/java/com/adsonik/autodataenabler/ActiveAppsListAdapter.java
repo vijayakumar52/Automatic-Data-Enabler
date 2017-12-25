@@ -70,10 +70,6 @@ public class ActiveAppsListAdapter extends BaseAdapter {
         return 0;
     }
 
-    public void setItems(List<String> items) {
-        this.packageList = items;
-        notifyDataSetChanged();
-    }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {

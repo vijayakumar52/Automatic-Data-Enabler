@@ -12,6 +12,9 @@ import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.*
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.MaterialDialog
+import com.vijay.androidutils.DialogUtils
 import com.vijay.androidutils.PrefUtils
 import com.vijay.androidutils.ToastUtils
 
@@ -21,7 +24,7 @@ import com.vijay.androidutils.ToastUtils
  */
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +33,6 @@ class MainActivity : AppCompatActivity() {
         val conRadioGroup = bind<RadioGroup>(this, R.id.conRadioGrp)
         val btnPickApps = bind<TextView>(this, R.id.btnPickApps)
         val lvActiveApps = bind<ListView>(this, R.id.lvActiveApps)
-        val btnActivate = bind<Button>(this, R.id.btnActivate)
-
 
         var curPreference = PrefUtils.getPrefValueInt(this, PREF_PREFERENCE);
         if (curPreference == -1) {
@@ -52,33 +53,48 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val activeApps = PrefUtils.getStringSet(this, PREF_WHITELISTED_APPS)
-        val activeAppsList = ArrayList<String>()
-        if (activeApps != null) {
-            activeAppsList.addAll(activeApps)
-        }
-        lvActiveApps.adapter = ActiveAppsListAdapter(this, activeAppsList)
+        lvActiveApps.adapter = ActiveAppsListAdapter(this, getActiveAppsFromPref())
         lvActiveApps.emptyView = findViewById<TextView>(R.id.tvEmpty)
-
-        btnActivate.setOnClickListener { _ ->
-            val activeAppsAdapter = lvActiveApps.adapter as ActiveAppsListAdapter
-            val allItems = activeAppsAdapter.allItems
-            if (allItems.size > 0) {
-                val activeAppsSet = HashSet<String>()
-                activeAppsSet.addAll(allItems)
-                addApps(activeAppsSet)
-                ToastUtils.showToast(this, R.string.toast_apps_added)
-            } else {
-                ToastUtils.showToast(this, R.string.toast_please_select_atlease_one_app)
-            }
-        }
 
         btnPickApps.setOnClickListener { _ ->
             val intent = Intent(this, AppDisplay::class.java)
-            intent.putStringArrayListExtra(EXTRA_RESULE, activeAppsList)
+            intent.putStringArrayListExtra(EXTRA_RESULE, getActiveAppsFromPref())
             startActivityForResult(intent, REQUEST_CODE)
         }
+
+        lvActiveApps.onItemLongClickListener = this
     }
+
+    fun getActiveAppsFromPref(): ArrayList<String> {
+        val list = ArrayList<String>()
+        val storedVal = PrefUtils.getStringSet(this, PREF_WHITELISTED_APPS)
+        if (storedVal != null) {
+            list.addAll(storedVal)
+        }
+        return list
+    }
+
+    override fun onItemLongClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long): Boolean {
+        if (p0 != null) {
+            var adapter = p0.getAdapter() as ActiveAppsListAdapter
+            val packName = adapter.getItem(p2)
+            val title = resources.getString(R.string.title_remove_app)
+            val content = resources.getString(R.string.title_remove_app_content)
+            val posText = resources.getString(R.string.title_remove)
+            val negText = resources.getString(R.string.title_cancel)
+            DialogUtils.getInstance().twoButtonDialog(this, title, content, posText, negText, true, MaterialDialog.SingleButtonCallback { dialog, which ->
+                if (which == DialogAction.POSITIVE) {
+                    removeApp(packName)
+                    ToastUtils.showToast(this, R.string.toast_app_removed)
+                    val lvActiveApps = bind<ListView>(this, R.id.lvActiveApps)
+                    lvActiveApps.adapter = ActiveAppsListAdapter(this, getActiveAppsFromPref())
+                }
+
+            }, null)
+        }
+        return false
+    }
+
 
     fun <T : View> bind(activity: Activity, @IdRes res: Int): T {
         @Suppress("UNCHECKED_CAST")
@@ -132,21 +148,24 @@ class MainActivity : AppCompatActivity() {
         PrefUtils.putStringSet(this, PREF_WHITELISTED_APPS, apps)
     }
 
+    fun removeApp(packName: String) {
+        val storedList = PrefUtils.getStringSet(this, PREF_WHITELISTED_APPS);
+        storedList.remove(packName)
+        PrefUtils.putStringSet(this, PREF_WHITELISTED_APPS, storedList)
+
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE) {
             if (data != null) {
                 val result = data.getStringArrayListExtra(EXTRA_RESULE)
                 val listView = (findViewById<ListView>(R.id.lvActiveApps))
-                val adapter = listView.adapter as ActiveAppsListAdapter
-                adapter.setItems(result)
+                listView.adapter = ActiveAppsListAdapter(this, result)
 
-                val btnView = bind<Button>(this, R.id.btnActivate);
-                if (result.size > 0) {
-                    btnView.visibility = View.VISIBLE
-                }else{
-                    btnView.visibility = View.GONE
-                }
+                val activeAppsSet = HashSet<String>()
+                activeAppsSet.addAll(result)
+                addApps(activeAppsSet)
             }
         }
     }

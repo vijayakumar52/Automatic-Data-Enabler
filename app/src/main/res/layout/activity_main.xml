@@ -102,14 +102,4 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/btnActivate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="8dp"
-        android:layout_margin="4dp"
-        android:textStyle="bold"
-        android:textColor="@color/txtColorBlack"
-        android:text="@string/ui_add_apps" />
 </LinearLayout>

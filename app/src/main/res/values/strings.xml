@@ -28,5 +28,10 @@
     <string name="toast_please_select_atlease_one_app">Please select at least one application :-(</string>
     <string name="toast_apps_added">Apps added!</string>
     <string name="ui_installed_apps">Installed Apps</string>
+    <string name="title_remove_app">Remove App</string>
+    <string name="title_remove_app_content">Are you sure you want to remove this app from Whitelist?</string>
+    <string name="title_remove">Remove</string>
+    <string name="title_cancel">Cancel</string>
+    <string name="toast_app_removed">App removed successfully!</string>
 
 </resources>
