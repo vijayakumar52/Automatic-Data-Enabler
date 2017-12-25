@@ -114,9 +114,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemLongClickListener {
 
     public companion object {
         fun scheduleTask(context: Context) {
-            val interval = 60 * 1000
+            val interval = 5 * 5000
             val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
-            val pendingIntent = getAlarmPendingIntent(context);
+            val pendingIntent = getAlarmPendingIntent(context)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + interval, pendingIntent)
             } else {
