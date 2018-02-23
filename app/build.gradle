@@ -9,8 +9,8 @@ android {
         applicationId "com.adsonik.autodataenabler"
         minSdkVersion 16
         targetSdkVersion 26
-        versionName = "2.01"
-        versionCode = 3
+        versionName = "2.02"
+        versionCode = 4
     }
 
     buildTypes {
